@@ -1,6 +1,7 @@
 import Mathlib.Data.Finset.Basic
 import Mathlib.Init.Function
 import Init.Prelude
+import Mathlib.Data.Fintype.Card
 /-
   S を有限集合とし, f : S → S を自分自身への写像とします. この時
   f が単射 ↔ 全射となりますが, まずこの主張を Lean で記述してみて
@@ -15,12 +16,18 @@ section
 variable {α : Type u_1} [Nonempty α]
 variable {S : Finset α} 
 variable {f: S → S}
+#check S
+
+example (H:Injective f) : Surjective f :=by
+  apply Finite.surjective_of_injective H
+
 
 --Finset S is meaning "S is a finite set".
 theorem rightside (h:Injective f) : Surjective f :=by
-  have setS := toSet S
+  .let ImS := Finset.image f S
+  /-have setS := toSet S
   let ImS := f '' setS
-  /-error:
+  error:
   application type mismatch
   f '' setS
 argument
