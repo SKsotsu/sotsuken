@@ -1,19 +1,20 @@
 import Init.Prelude
 namespace functionexpantion
 /-関数外延性による計算のブロック例-/
+variable (z: Nat)
 def f (x : Nat) := x
 def g (x : Nat) := 0 + x
 
 theorem f_eq_g : f = g :=
   funext fun x => (Nat.zero_add x).symm
 
-def val : Nat :=
-  Eq.recOn (motive := fun _ _ => Nat) f_eq_g 0
+def val /-(x:Nat)-/: Nat :=
+  Eq.recOn (motive := fun _ _ => Nat) f_eq_g 0 --x
 
 #check Eq.recOn
 #check Nat.add_assoc
 
-#eval val
+#eval val --なお、変数を入れられるようにしてzを入れるとエラー
 #reduce val
 #reduce (g 7)
 
@@ -21,27 +22,35 @@ def val : Nat :=
 end functionexpantion
 
 namespace funcExtest
+/-Strenge!!-/
 
-def f (x : Nat) := x
+def f (x : Nat) := x -- + 10 --色々変えてみました
 def g (x : Nat) := 1 + x
 def h (x : Nat) := x + 1
 
 theorem feqg_Fake : f=g := sorry
 
 def valFake : Nat :=
-  Eq.recOn (motive := fun _ _ => Nat) feqg_Fake 0
+  Eq.recOn (motive := fun _ _ => Nat) feqg_Fake 0 -- <-この末尾の数字が反映されている？
+
+#eval valFake --fの値を実は反映していない。
+#reduce valFake
 
 theorem g_eq_h : g=h := funext fun x =>(Nat.add_comm 1 x)
 
-#eval valFake
+def valgh /-(x:Nat)-/ := Eq.recOn (motive := fun _ _=> Nat) g_eq_h 0 --x
 
-def valgh:= Eq.recOn (motive := fun _ _ => Nat) g_eq_h 0
+#eval valgh --g(0),h(0)いずれも反映していない
+#reduce valgh
 
-#eval valgh
+def valtes := Eq.recOn (motive := fun _ _ => Nat) (Nat.add_zero 1) 9
 
-def valtes := Eq.recOn (motive := fun _ _ => Nat) (Nat.add_zero 1) 0
+#eval valtes  --どの値を反映しているのか？　fの改変結果からfでない。値よりg,hでない
+#reduce valtes
 
-#eval valtes
+def k (x : Nat) (y : Nat) := x + y + 1
+#eval k 2 3
+#reduce k 2 3
 
 end funcExtest
 
