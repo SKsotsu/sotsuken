@@ -34,7 +34,7 @@ theorem feqg_Fake : f=g := sorry --sorryを消しても実はevalで0が出た�
 def valFake : Nat :=
   Eq.recOn (motive := fun _ _ => Nat) feqg_Fake 0 -- <-この末尾の数字が反映されている？
 
-#eval valFake --fの値を実は反映していない。
+#eval valFake --fの値を実は反映している
 #reduce valFake
 
 theorem geqf_Fake : g=f := sorry
